@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
+import java.util.UUID;
 
 @Service
 public class OtpServiceImpl implements OtpService {
@@ -120,6 +121,155 @@ public class OtpServiceImpl implements OtpService {
             } else {
                 System.out.println("No valid OTP found for this identifier.");
             }
+            return false;
+        }
+    }
+
+    @Override
+    @Transactional
+    public boolean verifyRegistrationOtp(String identifier, String otpCode) {
+        // Clean up the identifier
+        String cleanIdentifier = identifier.trim();
+        
+        System.out.println("Verifying registration OTP for: " + cleanIdentifier + " with code: " + otpCode);
+        
+        Optional<OtpToken> otpToken = otpRepository.findValidOtp(cleanIdentifier, otpCode, LocalDateTime.now());
+        
+        if (otpToken.isPresent()) {
+            System.out.println("Registration OTP verified successfully for: " + cleanIdentifier);
+            // Don't mark as used yet - will be marked after registration is complete
+            return true;
+        } else {
+            System.out.println("Registration OTP not found, expired, or already used for: " + cleanIdentifier);
+            return false;
+        }
+    }
+
+    @Override
+    @Transactional
+    public String verifyRegistrationOtpWithToken(String identifier, String otpCode) {
+        // Clean up the identifier
+        String cleanIdentifier = identifier.trim();
+        
+        System.out.println("Verifying registration OTP with token for: " + cleanIdentifier + " with code: " + otpCode);
+        
+        Optional<OtpToken> otpToken = otpRepository.findValidOtp(cleanIdentifier, otpCode, LocalDateTime.now());
+        
+        if (otpToken.isPresent()) {
+            // Generate a temporary verification token (valid for 15 minutes)
+            String verificationToken = UUID.randomUUID().toString();
+            
+            // Store the token in the existing OTP token's metadata (we can add a new field)
+            // For now, we'll use a simple approach: append to the existing OTP
+            OtpToken token = otpToken.get();
+            token.setVerificationToken(verificationToken);
+            token.setVerificationTokenExpiry(LocalDateTime.now().plusMinutes(15));
+            otpRepository.save(token);
+            
+            System.out.println("Registration OTP verified with token for: " + cleanIdentifier);
+            return verificationToken;
+        } else {
+            System.out.println("Registration OTP not found, expired, or already used for: " + cleanIdentifier);
+            return null;
+        }
+    }
+
+    @Override
+    @Transactional
+    public boolean verifyRegistrationOtpSimple(String identifier, String otpCode) {
+        // Clean up the identifier
+        String cleanIdentifier = identifier.trim();
+        
+        System.out.println("Verifying registration OTP (simple) for: " + cleanIdentifier + " with code: " + otpCode);
+        
+        Optional<OtpToken> otpToken = otpRepository.findValidOtp(cleanIdentifier, otpCode, LocalDateTime.now());
+        
+        if (otpToken.isPresent()) {
+            // Mark OTP as verified but don't mark as used yet
+            OtpToken token = otpToken.get();
+            token.setEmailVerified(true); // Add this field to mark email as verified
+            otpRepository.save(token);
+            
+            System.out.println("Registration OTP verified successfully for: " + cleanIdentifier);
+            return true;
+        } else {
+            System.out.println("Registration OTP not found, expired, or already used for: " + cleanIdentifier);
+            return false;
+        }
+    }
+
+    @Override
+    @Transactional
+    public boolean isEmailVerified(String identifier) {
+        // Clean up the identifier
+        String cleanIdentifier = identifier.trim();
+        
+        System.out.println("Checking if email is verified for: " + cleanIdentifier);
+        
+        // Find any unused OTP token for this identifier that has email verified
+        Optional<OtpToken> otpToken = otpRepository.findEmailVerifiedOtp(cleanIdentifier, LocalDateTime.now());
+        
+        if (otpToken.isPresent()) {
+            OtpToken token = otpToken.get();
+            
+            // Check if verification is still valid (OTP not expired)
+            if (!token.isExpired()) {
+                System.out.println("Email is verified for: " + cleanIdentifier);
+                return true;
+            } else {
+                System.out.println("Email verification expired for: " + cleanIdentifier);
+                return false;
+            }
+        } else {
+            System.out.println("Email not verified for: " + cleanIdentifier);
+            return false;
+        }
+    }
+
+    @Override
+    @Transactional
+    public void markOtpAsUsed(String identifier, String otpCode) {
+        // Clean up the identifier
+        String cleanIdentifier = identifier.trim();
+        
+        System.out.println("Marking OTP as used for: " + cleanIdentifier);
+        
+        Optional<OtpToken> otpToken = otpRepository.findValidOtp(cleanIdentifier, otpCode, LocalDateTime.now());
+        
+        if (otpToken.isPresent()) {
+            OtpToken token = otpToken.get();
+            token.setUsed(true);
+            otpRepository.save(token);
+            System.out.println("OTP marked as used successfully for: " + cleanIdentifier);
+        } else {
+            System.out.println("No valid OTP found to mark as used for: " + cleanIdentifier);
+        }
+    }
+
+    @Override
+    @Transactional
+    public boolean validateVerificationToken(String verificationToken, String identifier) {
+        // Clean up the identifier
+        String cleanIdentifier = identifier.trim();
+        
+        System.out.println("Validating verification token for: " + cleanIdentifier);
+        
+        // Find OTP token by verification token and identifier
+        Optional<OtpToken> otpToken = otpRepository.findByVerificationTokenAndIdentifier(verificationToken, cleanIdentifier);
+        
+        if (otpToken.isPresent()) {
+            OtpToken token = otpToken.get();
+            
+            // Check if verification token is still valid
+            if (token.isVerificationTokenExpired()) {
+                System.out.println("Verification token expired for: " + cleanIdentifier);
+                return false;
+            }
+            
+            System.out.println("Verification token valid for: " + cleanIdentifier);
+            return true;
+        } else {
+            System.out.println("Invalid verification token for: " + cleanIdentifier);
             return false;
         }
     }

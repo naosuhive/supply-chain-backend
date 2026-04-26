@@ -30,6 +30,15 @@ public class OtpToken {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    @Column(name = "verification_token")
+    private String verificationToken;
+
+    @Column(name = "verification_token_expiry")
+    private LocalDateTime verificationTokenExpiry;
+
+    @Column(name = "email_verified")
+    private boolean emailVerified = false;
+
     // Constructors
     public OtpToken() {}
 
@@ -62,7 +71,20 @@ public class OtpToken {
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
+    public String getVerificationToken() { return verificationToken; }
+    public void setVerificationToken(String verificationToken) { this.verificationToken = verificationToken; }
+
+    public LocalDateTime getVerificationTokenExpiry() { return verificationTokenExpiry; }
+    public void setVerificationTokenExpiry(LocalDateTime verificationTokenExpiry) { this.verificationTokenExpiry = verificationTokenExpiry; }
+
     public boolean isExpired() {
         return LocalDateTime.now().isAfter(expiryTime);
     }
+
+    public boolean isVerificationTokenExpired() {
+        return verificationTokenExpiry != null && LocalDateTime.now().isAfter(verificationTokenExpiry);
+    }
+
+    public boolean isEmailVerified() { return emailVerified; }
+    public void setEmailVerified(boolean emailVerified) { this.emailVerified = emailVerified; }
 }

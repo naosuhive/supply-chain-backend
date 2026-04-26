@@ -34,4 +34,12 @@ public interface OtpRepository extends JpaRepository<OtpToken, UUID> {
     // Mark OTP as used
     @Query("UPDATE OtpToken o SET o.isUsed = true WHERE o.id = :id")
     void markAsUsed(@Param("id") UUID id);
+
+    // Find OTP by verification token and identifier
+    @Query("SELECT o FROM OtpToken o WHERE o.verificationToken = :verificationToken AND (o.phoneNumber = :identifier OR o.email = :identifier) AND o.isUsed = false")
+    Optional<OtpToken> findByVerificationTokenAndIdentifier(@Param("verificationToken") String verificationToken, @Param("identifier") String identifier);
+
+    // Find OTP token with email verified status
+    @Query("SELECT o FROM OtpToken o WHERE (o.phoneNumber = :identifier OR o.email = :identifier) AND o.emailVerified = true AND o.isUsed = false AND o.expiryTime > :now")
+    Optional<OtpToken> findEmailVerifiedOtp(@Param("identifier") String identifier, @Param("now") LocalDateTime now);
 }

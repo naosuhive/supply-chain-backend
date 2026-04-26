@@ -8,6 +8,7 @@ import com.noasuhive.supply_chain_management.dto.auth.OtpRequestDto;
 import com.noasuhive.supply_chain_management.dto.auth.OtpVerificationDto;
 import com.noasuhive.supply_chain_management.dto.auth.ResetPasswordRequestDto;
 import com.noasuhive.supply_chain_management.dto.auth.UserRegistrationDto;
+import com.noasuhive.supply_chain_management.dto.auth.RegistrationVerificationDto;
 import com.noasuhive.supply_chain_management.service.auth.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -31,18 +32,18 @@ public class AuthController {
 
     public AuthController(AuthService authService) { this.authService = authService; }
 
-    @Operation(summary = "Register new user", description = "Register a new user with email, phone, and password")
+    @Operation(summary = "Register new user (after OTP verification)", description = "Step 3: Complete user registration - email must be verified in step 2. For manufacturers: companyName is required. For retailers: businessName is required. Address is optional for all user types.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "User registered successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid input data"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data, missing required fields, or email not verified"),
             @ApiResponse(responseCode = "409", description = "User already exists")
     })
     @PostMapping("/register")
     public ResponseEntity<?> register(
-            @Parameter(description = "User registration details", required = true)
-            @Valid @RequestBody UserRegistrationDto dto) {
-        authService.register(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+            @Parameter(description = "Complete registration data - email must be verified from step 2", required = true)
+            @Valid @RequestBody UserRegistrationDto request) {
+        authService.registerAfterEmailVerification(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
     }
 
     @Operation(summary = "User login with password", description = "Authenticate user with username/email and password")
@@ -73,17 +74,21 @@ public class AuthController {
         return ResponseEntity.ok("OTP sent successfully");
     }
 
-    @Operation(summary = "Verify registration OTP", description = "Verify OTP for user registration")
+    @Operation(summary = "Verify registration OTP", description = "Verify OTP for user registration - marks email as verified for final registration step")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OTP verified successfully"),
+            @ApiResponse(responseCode = "200", description = "OTP verified successfully - email marked as verified"),
             @ApiResponse(responseCode = "400", description = "Invalid or expired OTP")
     })
     @PostMapping("/verify-registration-otp")
     public ResponseEntity<?> verifyRegistrationOtp(
             @Parameter(description = "OTP verification details", required = true)
-            @Valid @RequestBody OtpVerificationDto dto) {
-        authService.verifyRegistrationOtp(dto);
-        return ResponseEntity.ok("OTP verified successfully");
+            @Valid @RequestBody RegistrationVerificationDto dto) {
+        boolean verified = authService.verifyRegistrationOtpSimple(dto.getIdentifier(), dto.getOtpCode());
+        if (verified) {
+            return ResponseEntity.ok("OTP verified successfully - you can now proceed with registration");
+        } else {
+            return ResponseEntity.badRequest().body("Invalid or expired OTP");
+        }
     }
 
     @Operation(summary = "Send login OTP", description = "Send OTP for login via email or SMS")

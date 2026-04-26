@@ -26,6 +26,26 @@ public class UserRegistrationDto {
     @NotBlank
     private String role; // ROLE_MANUFACTURER, ROLE_RETAILER, ROLE_CUSTOMER, ROLE_ADMIN
 
+    // Manufacturer specific fields
+    @Size(max = 100, message = "Company name must not exceed 100 characters")
+    private String companyName;
+
+    @Size(max = 50, message = "GST number must not exceed 50 characters")
+    private String gstNumber;
+
+    @Size(max = 50, message = "Business type must not exceed 50 characters")
+    private String businessType;
+
+    // Retailer specific fields
+    @Size(max = 100, message = "Business name must not exceed 100 characters")
+    private String businessName;
+
+    @Size(max = 50, message = "Store type must not exceed 50 characters")
+    private String storeType;
+
+    // Optional address for all user types
+    private AddressDto address;
+
     // Getters and setters
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
@@ -41,5 +61,23 @@ public class UserRegistrationDto {
 
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+
+    public String getCompanyName() { return companyName; }
+    public void setCompanyName(String companyName) { this.companyName = companyName; }
+
+    public String getGstNumber() { return gstNumber; }
+    public void setGstNumber(String gstNumber) { this.gstNumber = gstNumber; }
+
+    public String getBusinessType() { return businessType; }
+    public void setBusinessType(String businessType) { this.businessType = businessType; }
+
+    public String getBusinessName() { return businessName; }
+    public void setBusinessName(String businessName) { this.businessName = businessName; }
+
+    public String getStoreType() { return storeType; }
+    public void setStoreType(String storeType) { this.storeType = storeType; }
+
+    public AddressDto getAddress() { return address; }
+    public void setAddress(AddressDto address) { this.address = address; }
 }
 
