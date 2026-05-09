@@ -3,8 +3,10 @@ package com.noasuhive.supply_chain_management;
 import com.noasuhive.supply_chain_management.models.InventoryItem;
 import com.noasuhive.supply_chain_management.repositories.InventoryRepository;
 import com.noasuhive.supply_chain_management.repositories.RetailerProfileRepository;
+import com.noasuhive.supply_chain_management.repositories.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,27 +20,39 @@ import java.util.List;
 import java.util.UUID;
 
 @Component
+@Order(2)
 public class InventoryDataLoader implements CommandLineRunner {
 
     private static final String INVENTORY_RESOURCE = "inventory-data.csv";
+    private static final String DEMO_RETAILER_USERNAME = "retailer_user";
 
     private final InventoryRepository inventoryRepository;
     private final RetailerProfileRepository retailerProfileRepository;
+    private final UserRepository userRepository;
 
     public InventoryDataLoader(
             InventoryRepository inventoryRepository,
-            RetailerProfileRepository retailerProfileRepository) {
+            RetailerProfileRepository retailerProfileRepository,
+            UserRepository userRepository) {
         this.inventoryRepository = inventoryRepository;
         this.retailerProfileRepository = retailerProfileRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
     @Transactional
     public void run(String... args) {
-        UUID retailerId = retailerProfileRepository.findFirstByOrderByCreatedAtAsc()
-                .orElseThrow(() -> new IllegalStateException("Cannot load inventory data because no retailer profile exists"))
+        if (inventoryRepository.count() > 0) {
+            return;
+        }
+
+        UUID retailerUserId = userRepository.findByUsername(DEMO_RETAILER_USERNAME)
+                .orElseThrow(() -> new IllegalStateException("Cannot load inventory data because demo retailer user does not exist"))
                 .getId();
-        inventoryRepository.deleteAllInBatch();
+
+        UUID retailerId = retailerProfileRepository.findByUserId(retailerUserId)
+                .orElseThrow(() -> new IllegalStateException("Cannot load inventory data because demo retailer profile does not exist"))
+                .getId();
         inventoryRepository.saveAll(loadInventoryItems(retailerId));
     }
 

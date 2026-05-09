@@ -2,6 +2,8 @@ package com.noasuhive.supply_chain_management.models;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
@@ -12,11 +14,18 @@ import java.util.UUID;
 @Entity
 @Table(
         name = "inventory_items",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"retailer_id", "item_code"})
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"retailer_id", "item_id"}),
+                @UniqueConstraint(columnNames = {"retailer_id", "item_code"})
+        }
 )
 public class InventoryItem {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @Column(nullable = false)
     private Integer itemId;
 
     @Column(nullable = false)
@@ -58,6 +67,9 @@ public class InventoryItem {
 
     @Column(precision = 19, scale = 2)
     private BigDecimal discount;
+
+    public UUID getId() { return id; }
+    public void setId(UUID id) { this.id = id; }
 
     public Integer getItemId() { return itemId; }
     public void setItemId(Integer itemId) { this.itemId = itemId; }

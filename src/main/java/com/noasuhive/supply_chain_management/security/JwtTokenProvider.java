@@ -15,7 +15,7 @@ public class JwtTokenProvider {
     private final Key key;
     private final long validityInMilliseconds;
 
-    public JwtTokenProvider(@Value("${app.jwt.secret:dev_secret}") String secret,
+    public JwtTokenProvider(@Value("${app.jwt.secret:dev_secret_key_change_me_1234567890}") String secret,
                             @Value("${app.jwt.expiration-ms:3600000}") long validityInMilliseconds) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
         this.validityInMilliseconds = validityInMilliseconds;

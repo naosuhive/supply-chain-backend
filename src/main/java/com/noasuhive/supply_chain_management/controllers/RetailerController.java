@@ -9,6 +9,7 @@ import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +30,7 @@ public class RetailerController {
     }
 
     @PostMapping("/products")
-    public ResponseEntity<Void> addProduct(HttpServletRequest request, @Valid @RequestBody RetailerProductDto dto) {
+    public ResponseEntity<RetailerProductResponseDto> addProduct(HttpServletRequest request, @Valid @RequestBody RetailerProductDto dto) {
         String auth = request.getHeader("Authorization");
         if (auth == null || !auth.startsWith("Bearer ")) return ResponseEntity.status(401).build();
         String token = auth.substring(7);
@@ -38,8 +39,7 @@ public class RetailerController {
         String retailerIdStr = claims.get("retailer_id", String.class);
         if (retailerIdStr == null) return ResponseEntity.status(403).build();
         UUID retailerId = UUID.fromString(retailerIdStr);
-        retailerService.addProductToCatalog(retailerId, dto);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(retailerService.addProductToCatalog(retailerId, dto));
     }
 
     @GetMapping("/products")

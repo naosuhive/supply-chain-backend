@@ -8,8 +8,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface RetailerProductRepository extends JpaRepository<RetailerProduct, UUID> {
+    boolean existsByRetailerIdAndProductId(UUID retailerId, UUID productId);
     Optional<RetailerProduct> findByRetailerIdAndProductId(UUID retailerId, UUID productId);
+    Optional<RetailerProduct> findByIdAndRetailerId(UUID id, UUID retailerId);
     List<RetailerProduct> findByRetailerId(UUID retailerId);
     List<RetailerProduct> findAllByIsActiveTrue();
 }
-

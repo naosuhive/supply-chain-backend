@@ -6,17 +6,21 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "retailer_products")
+@Table(
+        name = "retailer_products",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"retailer_id", "product_id"})
+)
 public class RetailerProduct {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Column(nullable = false)
     private UUID retailerId;
 
     @ManyToOne
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     private Long stock;
@@ -55,4 +59,3 @@ public class RetailerProduct {
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 }
-

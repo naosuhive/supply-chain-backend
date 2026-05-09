@@ -8,8 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface RetailerService {
-    void addProductToCatalog(UUID retailerId, RetailerProductDto dto);
+    RetailerProductResponseDto addProductToCatalog(UUID retailerId, RetailerProductDto dto);
     List<RetailerProductResponseDto> listRetailerProducts(UUID retailerId);
-    RetailerProductResponseDto updateRetailerProduct(UUID productId, UUID retailerId, RetailerProductUpdateDto updateDto);
+    RetailerProductResponseDto updateRetailerProduct(UUID retailerProductId, UUID retailerId, RetailerProductUpdateDto updateDto);
 }
-

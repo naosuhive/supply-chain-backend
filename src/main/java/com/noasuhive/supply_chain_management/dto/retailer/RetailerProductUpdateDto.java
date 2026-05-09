@@ -1,17 +1,19 @@
 package com.noasuhive.supply_chain_management.dto.retailer;
 
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Positive;
+
 import java.math.BigDecimal;
 
 public class RetailerProductUpdateDto {
 
-    @Positive(message = "Stock must be positive")
+    @Min(value = 0, message = "Stock must be 0 or greater")
     private Long stock;
 
-    @Min(value = 0, message = "Price must be positive")
+    @DecimalMin(value = "0.0", inclusive = true, message = "Retail price must be 0 or greater")
     private BigDecimal retailPrice;
 
+    @DecimalMin(value = "0.0", inclusive = true, message = "Discount must be 0 or greater")
     private BigDecimal discount;
 
     private Boolean isActive;

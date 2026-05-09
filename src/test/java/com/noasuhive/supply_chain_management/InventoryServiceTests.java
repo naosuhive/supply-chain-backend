@@ -2,6 +2,9 @@ package com.noasuhive.supply_chain_management;
 
 import com.noasuhive.supply_chain_management.dto.inventory.InventoryRequestDto;
 import com.noasuhive.supply_chain_management.dto.inventory.InventoryResponseDto;
+import com.noasuhive.supply_chain_management.models.RetailerProfile;
+import com.noasuhive.supply_chain_management.repositories.RetailerProfileRepository;
+import com.noasuhive.supply_chain_management.repositories.UserRepository;
 import com.noasuhive.supply_chain_management.service.inventory.InventoryService;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
@@ -15,12 +18,11 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 class InventoryServiceTests {
-
-    private static final UUID RETAILER_ID = UUID.fromString("550e8400-e29b-41d4-a716-446655440031");
 
     @Autowired
     private InventoryService inventoryService;
@@ -28,9 +30,18 @@ class InventoryServiceTests {
     @Autowired
     private Validator validator;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private RetailerProfileRepository retailerProfileRepository;
+
+    @Autowired
+    private InventoryDataLoader inventoryDataLoader;
+
     @Test
     void getInventoryListReturnsGridReadyRows() {
-        List<InventoryResponseDto> rows = inventoryService.getAllInventoryItems(RETAILER_ID);
+        List<InventoryResponseDto> rows = inventoryService.getAllInventoryItems(demoRetailerId());
 
         assertEquals(149, rows.size());
 
@@ -56,7 +67,7 @@ class InventoryServiceTests {
 
     @Test
     void searchInventoryItemsReturnsCaseInsensitivePartialMatches() {
-        List<InventoryResponseDto> rows = inventoryService.searchInventoryItems(RETAILER_ID, "lBoW");
+        List<InventoryResponseDto> rows = inventoryService.searchInventoryItems(demoRetailerId(), "lBoW");
 
         assertTrue(rows.size() >= 3);
         assertTrue(rows.stream()
@@ -69,7 +80,7 @@ class InventoryServiceTests {
     @Test
     void searchInventoryItemsRequiresItemName() {
         try {
-            inventoryService.searchInventoryItems(RETAILER_ID, "   ");
+            inventoryService.searchInventoryItems(demoRetailerId(), "   ");
         } catch (IllegalArgumentException ex) {
             assertEquals("itemName query parameter is required", ex.getMessage());
             return;
@@ -105,6 +116,43 @@ class InventoryServiceTests {
                 .anyMatch(violation -> "unitPrice".equals(violation.getPropertyPath().toString())));
     }
 
+    @Test
+    void inventoryIdentifiersAreScopedPerRetailer() {
+        RetailerProfile secondRetailer = new RetailerProfile();
+        secondRetailer.setUserId(UUID.randomUUID());
+        secondRetailer.setBusinessName("Second Retailer");
+        secondRetailer.setGstNumber("GST222222222");
+        secondRetailer.setStoreType("Hardware");
+        secondRetailer = retailerProfileRepository.save(secondRetailer);
+
+        InventoryRequestDto requestDto = validRequest();
+        requestDto.setItemId(1);
+        requestDto.setItemCode("PL00001");
+        requestDto.setItemName("Scoped duplicate");
+
+        InventoryResponseDto created = inventoryService.createInventoryItem(secondRetailer.getId(), requestDto);
+
+        assertEquals(1, created.getItemId());
+        assertEquals("PL00001", created.getItemCode());
+        assertFalse(inventoryService.getAllInventoryItems(secondRetailer.getId()).isEmpty());
+    }
+
+    @Test
+    void inventoryLoaderDoesNotOverwriteExistingInventory() {
+        InventoryRequestDto requestDto = validRequest();
+        requestDto.setItemId(999);
+        requestDto.setItemCode("PL00999");
+        requestDto.setItemName("Restart Check");
+
+        UUID retailerId = demoRetailerId();
+        inventoryService.createInventoryItem(retailerId, requestDto);
+
+        inventoryDataLoader.run();
+
+        InventoryResponseDto reloaded = inventoryService.getInventoryItem(retailerId, 999);
+        assertEquals("Restart Check", reloaded.getItemName());
+    }
+
     private InventoryRequestDto validRequest() {
         InventoryRequestDto requestDto = new InventoryRequestDto();
         requestDto.setItemId(200);
@@ -120,5 +168,14 @@ class InventoryServiceTests {
         requestDto.setUnitName("boxes");
         requestDto.setDiscount(BigDecimal.ZERO);
         return requestDto;
+    }
+
+    private UUID demoRetailerId() {
+        UUID userId = userRepository.findByUsername("retailer_user")
+                .orElseThrow(() -> new AssertionError("retailer_user seed data missing"))
+                .getId();
+        return retailerProfileRepository.findByUserId(userId)
+                .orElseThrow(() -> new AssertionError("retailer profile seed data missing"))
+                .getId();
     }
 }

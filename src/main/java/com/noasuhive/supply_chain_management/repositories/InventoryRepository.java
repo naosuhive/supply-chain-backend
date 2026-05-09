@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface InventoryRepository extends JpaRepository<InventoryItem, Integer> {
+public interface InventoryRepository extends JpaRepository<InventoryItem, UUID> {
 
     boolean existsByRetailerIdAndItemId(UUID retailerId, Integer itemId);
 
@@ -17,5 +17,5 @@ public interface InventoryRepository extends JpaRepository<InventoryItem, Intege
 
     List<InventoryItem> findByRetailerIdOrderByItemIdAsc(UUID retailerId);
 
-    List<InventoryItem> findByItemNameContainingIgnoreCase(String itemName);
+    List<InventoryItem> findByRetailerIdAndItemNameContainingIgnoreCaseOrderByItemIdAsc(UUID retailerId, String itemName);
 }

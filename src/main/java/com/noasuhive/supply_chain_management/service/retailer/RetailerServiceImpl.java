@@ -28,40 +28,33 @@ public class RetailerServiceImpl implements RetailerService {
 
     @Override
     @Transactional
-    public void addProductToCatalog(UUID retailerId, RetailerProductDto dto) {
+    public RetailerProductResponseDto addProductToCatalog(UUID retailerId, RetailerProductDto dto) {
         Product p = productRepository.findById(dto.getProductId()).orElseThrow(() -> new IllegalArgumentException("Product not found"));
+        if (retailerProductRepository.existsByRetailerIdAndProductId(retailerId, dto.getProductId())) {
+            throw new IllegalArgumentException("Product is already in your catalog");
+        }
+
         RetailerProduct rp = new RetailerProduct();
         rp.setRetailerId(retailerId);
         rp.setProduct(p);
         rp.setStock(dto.getStock());
         rp.setRetailPrice(dto.getRetailPrice());
         rp.setDiscount(dto.getDiscount());
-        retailerProductRepository.save(rp);
+        return toResponseDto(retailerProductRepository.save(rp));
     }
 
     @Override
     public List<RetailerProductResponseDto> listRetailerProducts(UUID retailerId) {
-        return retailerProductRepository.findByRetailerId(retailerId).stream().map(rp -> {
-            Product p = rp.getProduct();
-            RetailerProductResponseDto d = new RetailerProductResponseDto();
-            d.setId(rp.getId());
-            d.setProductId(p.getId());
-            d.setProductName(p.getProductName());
-            d.setCategory(p.getCategory());
-            d.setBrand(p.getBrand());
-            d.setRetailPrice(rp.getRetailPrice());
-            d.setDiscount(rp.getDiscount());
-            d.setStock(rp.getStock());
-            d.setActive(rp.isActive());
-            return d;
-        }).collect(Collectors.toList());
+        return retailerProductRepository.findByRetailerId(retailerId).stream()
+                .map(this::toResponseDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public RetailerProductResponseDto updateRetailerProduct(UUID productId, UUID retailerId, RetailerProductUpdateDto updateDto) {
+    public RetailerProductResponseDto updateRetailerProduct(UUID retailerProductId, UUID retailerId, RetailerProductUpdateDto updateDto) {
         RetailerProduct rp = retailerProductRepository
-                .findByRetailerIdAndProductId(retailerId, productId)
+                .findByIdAndRetailerId(retailerProductId, retailerId)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found in your catalog"));
 
         if (updateDto.getStock() != null) {
@@ -77,20 +70,21 @@ public class RetailerServiceImpl implements RetailerService {
             rp.setActive(updateDto.getIsActive());
         }
 
-        retailerProductRepository.save(rp);
+        return toResponseDto(retailerProductRepository.save(rp));
+    }
 
-        Product p = rp.getProduct();
+    private RetailerProductResponseDto toResponseDto(RetailerProduct retailerProduct) {
+        Product product = retailerProduct.getProduct();
         RetailerProductResponseDto response = new RetailerProductResponseDto();
-        response.setId(rp.getId());
-        response.setProductId(p.getId());
-        response.setProductName(p.getProductName());
-        response.setCategory(p.getCategory());
-        response.setBrand(p.getBrand());
-        response.setRetailPrice(rp.getRetailPrice());
-        response.setDiscount(rp.getDiscount());
-        response.setStock(rp.getStock());
-        response.setActive(rp.isActive());
+        response.setId(retailerProduct.getId());
+        response.setProductId(product.getId());
+        response.setProductName(product.getProductName());
+        response.setCategory(product.getCategory());
+        response.setBrand(product.getBrand());
+        response.setRetailPrice(retailerProduct.getRetailPrice());
+        response.setDiscount(retailerProduct.getDiscount());
+        response.setStock(retailerProduct.getStock());
+        response.setActive(retailerProduct.isActive());
         return response;
     }
 }
-

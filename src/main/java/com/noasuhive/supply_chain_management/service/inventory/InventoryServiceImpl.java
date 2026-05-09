@@ -8,7 +8,6 @@ import com.noasuhive.supply_chain_management.repositories.InventoryRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,9 +36,7 @@ public class InventoryServiceImpl implements InventoryService {
             throw new IllegalArgumentException("itemName query parameter is required");
         }
 
-        return inventoryRepository.findByItemNameContainingIgnoreCase(normalizedItemName).stream()
-                .filter(inventoryItem -> retailerId.equals(inventoryItem.getRetailerId()))
-                .sorted(Comparator.comparing(InventoryItem::getItemId))
+        return inventoryRepository.findByRetailerIdAndItemNameContainingIgnoreCaseOrderByItemIdAsc(retailerId, normalizedItemName).stream()
                 .map(this::toResponseDto)
                 .toList();
     }
