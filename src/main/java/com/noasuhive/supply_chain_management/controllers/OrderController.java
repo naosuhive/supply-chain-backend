@@ -4,6 +4,7 @@ import com.noasuhive.supply_chain_management.dto.order.*;
 import com.noasuhive.supply_chain_management.security.JwtTokenProvider;
 import com.noasuhive.supply_chain_management.service.order.OrderService;
 import io.jsonwebtoken.Claims;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/orders")
+@Tag(name = "Order Management", description = "Order creation, lookup, and status update APIs")
 public class OrderController {
 
     private final OrderService orderService;

@@ -6,6 +6,7 @@ import com.noasuhive.supply_chain_management.dto.product.ProductUpdateDto;
 import com.noasuhive.supply_chain_management.security.JwtTokenProvider;
 import com.noasuhive.supply_chain_management.service.manufacturer.ManufacturerService;
 import io.jsonwebtoken.Claims;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/manufacturer")
+@Tag(name = "Manufacturer Operations", description = "Manufacturer product management APIs")
 public class ManufacturerController {
 
     private final ManufacturerService manufacturerService;

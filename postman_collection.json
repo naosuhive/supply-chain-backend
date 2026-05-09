@@ -1,419 +1,1395 @@
 {
-	"info": {
-		"_postman_id": "supply-chain-ui-integration",
-		"name": "Supply Chain Management - UI Integration API",
-		"description": "Production-ready API collection for UI team integration. Contains all essential endpoints for user authentication, registration, and password management.",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-	},
-	"item": [
-		{
-			"name": "User Registration (3-Step Flow)",
-			"description": "Complete user registration with email verification. Required for all new user signups.",
-			"item": [
-				{
-					"name": "Step 1: Send Registration OTP",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"email\": \"user@example.com\"\n}"
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/auth/send-registration-otp",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "auth", "send-registration-otp"]
-						},
-						"description": "Send OTP to user's email for registration verification"
-					},
-					"response": []
-				},
-				{
-					"name": "Step 2: Verify Registration OTP",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"identifier\": \"user@example.com\",\n  \"otpCode\": \"123456\"\n}"
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/auth/verify-registration-otp",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "auth", "verify-registration-otp"]
-						},
-						"description": "Verify OTP received via email. Must be successful before proceeding to step 3."
-					},
-					"response": []
-				},
-				{
-					"name": "Step 3: Complete Customer Registration (Without Address)",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"username\": \"customer_user\",\n  \"email\": \"customer@example.com\",\n  \"phoneNumber\": \"+1234567890\",\n  \"password\": \"securePassword123\",\n  \"role\": \"ROLE_CUSTOMER\"\n}"
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/auth/register",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "auth", "register"]
-						},
-						"description": "Complete customer registration without address. Email must be verified in step 2. Address can be added later."
-					},
-					"response": []
-				},
-				{
-					"name": "Step 3: Complete Customer Registration (With Address)",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"username\": \"customer_user_with_address\",\n  \"email\": \"customer_with_address@example.com\",\n  \"phoneNumber\": \"+1234567895\",\n  \"password\": \"securePassword123\",\n  \"role\": \"ROLE_CUSTOMER\",\n  \"address\": {\n    \"line1\": \"123 Main St\",\n    \"city\": \"New York\",\n    \"state\": \"NY\",\n    \"country\": \"USA\",\n    \"postalCode\": \"10001\",\n    \"isPrimary\": true\n  }\n}"
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/auth/register",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "auth", "register"]
-						},
-						"description": "Complete customer registration with address. Email must be verified in step 2."
-					},
-					"response": []
-				},
-				{
-					"name": "Step 3: Complete Manufacturer Registration",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"username\": \"manufacturer_user\",\n  \"email\": \"manufacturer@example.com\",\n  \"phoneNumber\": \"+1234567891\",\n  \"password\": \"securePassword123\",\n  \"role\": \"ROLE_MANUFACTURER\",\n  \"companyName\": \"ACME Manufacturing Co.\",\n  \"gstNumber\": \"GST123456789\",\n  \"businessType\": \"Electronics\",\n  \"address\": {\n    \"line1\": \"456 Industrial Ave\",\n    \"city\": \"Detroit\",\n    \"state\": \"MI\",\n    \"country\": \"USA\",\n    \"postalCode\": \"48201\",\n    \"isPrimary\": true\n  }\n}"
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/auth/register",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "auth", "register"]
-						},
-						"description": "Complete manufacturer registration. Email must be verified in step 2. companyName is required field."
-					},
-					"response": []
-				},
-				{
-					"name": "Step 3: Complete Retailer Registration",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"username\": \"retailer_user\",\n  \"email\": \"retailer@example.com\",\n  \"phoneNumber\": \"+1234567892\",\n  \"password\": \"securePassword123\",\n  \"role\": \"ROLE_RETAILER\",\n  \"businessName\": \"Best Retail Store\",\n  \"gstNumber\": \"GST987654321\",\n  \"storeType\": \"Electronics\",\n  \"address\": {\n    \"line1\": \"789 Shopping Blvd\",\n    \"city\": \"Los Angeles\",\n    \"state\": \"CA\",\n    \"country\": \"USA\",\n    \"postalCode\": \"90001\",\n    \"isPrimary\": true\n  }\n}"
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/auth/register",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "auth", "register"]
-						},
-						"description": "Complete retailer registration. Email must be verified in step 2. businessName is required field."
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "User Authentication",
-			"description": "User login and authentication endpoints.",
-			"item": [
-				{
-					"name": "Login with Password",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"usernameOrEmail\": \"username_or_email\",\n  \"password\": \"user_password\"\n}"
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/auth/login",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "auth", "login"]
-						},
-						"description": "Login using username/email and password. Returns JWT token for authenticated sessions."
-					},
-					"response": []
-				},
-				{
-					"name": "Login with OTP (Step 1: Send OTP)",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"identifier\": \"username_or_email_or_phone\"\n}"
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/auth/send-login-otp",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "auth", "send-login-otp"]
-						},
-						"description": "Send OTP for passwordless login. Can use username, email, or phone number."
-					},
-					"response": []
-				},
-				{
-					"name": "Login with OTP (Step 2: Verify OTP)",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"identifier\": \"username_or_email_or_phone\",\n  \"otpCode\": \"123456\"\n}"
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/auth/verify-login-otp",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "auth", "verify-login-otp"]
-						},
-						"description": "Verify OTP for passwordless login. Returns JWT token for authenticated sessions."
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Address Management",
-			"description": "Address CRUD operations for authenticated users. JWT token required in Authorization header.",
-			"item": [
-				{
-					"name": "reate Address",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "Authorization",
-								"value": "Bearer {{jwtToken}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"line1\": \"123 Main St\",\n  \"line2\": \"Apt 4B\",\n  \"city\": \"New York\",\n  \"state\": \"NY\",\n  \"country\": \"USA\",\n  \"postalCode\": \"10001\",\n  \"addressType\": \"SHIPPING\",\n  \"isPrimary\": true\n}"
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/addresses",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "addresses"]
-						},
-						"description": "Create a new address for the authenticated user. addressType: SHIPPING, BILLING, BUSINESS"
-					},
-					"response": []
-				},
-				{
-					"name": "Get User Addresses",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{jwtToken}}"
-							}
-						],
-						"url": {
-							"raw": "{{baseUrl}}/api/addresses",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "addresses"]
-						},
-						"description": "Get all addresses for the authenticated user."
-					},
-					"response": []
-				},
-				{
-					"name": "Update Address",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "Authorization",
-								"value": "Bearer {{jwtToken}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"line1\": \"456 Updated St\",\n  \"line2\": \"Suite 100\",\n  \"city\": \"Los Angeles\",\n  \"state\": \"CA\",\n  \"country\": \"USA\",\n  \"postalCode\": \"90001\",\n  \"addressType\": \"BILLING\",\n  \"isPrimary\": false\n}"
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/addresses/{{addressId}}",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "addresses", "{{addressId}}"]
-						},
-						"description": "Update an existing address. Replace {{addressId}} with actual address ID."
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Address",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{jwtToken}}"
-							}
-						],
-						"url": {
-							"raw": "{{baseUrl}}/api/addresses/{{addressId}}",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "addresses", "{{addressId}}"]
-						},
-						"description": "Delete an address. Replace {{addressId}} with actual address ID."
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Password Management",
-			"description": "Password reset and recovery endpoints.",
-			"item": [
-				{
-					"name": "Send Forgot Password OTP",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"identifier\": \"username_or_email_or_phone\"\n}"
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/auth/send-forgot-password-otp",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "auth", "send-forgot-password-otp"]
-						},
-						"description": "Send OTP for password reset. User must exist in system."
-					},
-					"response": []
-				},
-				{
-					"name": "Reset Password with OTP",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"identifier\": \"username_or_email_or_phone\",\n  \"otpCode\": \"123456\",\n  \"newPassword\": \"newSecurePassword123\"\n}"
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/auth/reset-password",
-							"host": ["{{baseUrl}}"],
-							"path": ["api", "auth", "reset-password"]
-						},
-						"description": "Reset password using OTP verification. New password must be at least 6 characters."
-					},
-					"response": []
-				}
-			]
-		}
-	],
-	"variable": [
-		{
-			"key": "baseUrl",
-			"value": "http://localhost:8080",
-			"type": "string",
-			"description": "Base URL for the API endpoints"
-		},
-		{
-			"key": "jwtToken",
-			"value": "",
-			"type": "string",
-			"description": "JWT token from login response for authenticated requests"
-		},
-		{
-			"key": "addressId",
-			"value": "",
-			"type": "string",
-			"description": "Address ID for update/delete operations"
-		}
-	],
-	"event": [
-		{
-			"listen": "prerequest",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		},
-		{
-			"listen": "test",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		}
-	]
+  "info": {
+    "_postman_id": "supply-chain-management-api",
+    "name": "Supply Chain Management API",
+    "description": "Complete API collection for Supply Chain Management, including authentication, addresses, products, manufacturer and retailer operations, and orders.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "REST API Basics: CRUD, Tests & Variables",
+      "description": "Starter examples showing REST API basics in Postman: create, read, update, delete, request tests, and collection variables.",
+      "item": [
+        {
+          "name": "Variables Demo: Login And Save JWT",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Login request succeeds\", function () {",
+                  "  pm.expect(pm.response.code).to.eql(200);",
+                  "});",
+                  "",
+                  "const data = pm.response.json();",
+                  "if (data && data.token) {",
+                  "  pm.collectionVariables.set(\"jwtToken\", data.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usernameOrEmail\": \"{{loginIdentifier}}\",\n  \"password\": \"{{loginPassword}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Uses collection variables and saves the returned JWT token into `jwtToken` for later requests."
+          },
+          "response": []
+        },
+        {
+          "name": "CRUD Create: Add Address",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Create address succeeds\", function () {",
+                  "  pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "",
+                  "const data = pm.response.json();",
+                  "if (data && data.id) {",
+                  "  pm.collectionVariables.set(\"addressId\", data.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"line1\": \"101 Market Street\",\n  \"line2\": \"Floor 2\",\n  \"city\": \"San Francisco\",\n  \"state\": \"CA\",\n  \"country\": \"USA\",\n  \"postalCode\": \"94105\",\n  \"addressType\": \"SHIPPING\",\n  \"isPrimary\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/addresses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "addresses"
+              ]
+            },
+            "description": "POST example. Creates an address and saves the returned `id` into the `addressId` collection variable."
+          },
+          "response": []
+        },
+        {
+          "name": "CRUD Read: Get Product Catalog",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Catalog request succeeds\", function () {",
+                  "  pm.expect(pm.response.code).to.eql(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ]
+            },
+            "description": "GET example. Reads the public product catalog."
+          },
+          "response": []
+        },
+        {
+          "name": "CRUD Update: Update Address",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Update address succeeds\", function () {",
+                  "  pm.expect(pm.response.code).to.eql(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"line1\": \"101 Market Street Updated\",\n  \"line2\": \"Floor 3\",\n  \"city\": \"San Francisco\",\n  \"state\": \"CA\",\n  \"country\": \"USA\",\n  \"postalCode\": \"94105\",\n  \"addressType\": \"BILLING\",\n  \"isPrimary\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/addresses/{{addressId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "addresses",
+                "{{addressId}}"
+              ]
+            },
+            "description": "PUT example. Uses the saved `addressId` collection variable."
+          },
+          "response": []
+        },
+        {
+          "name": "CRUD Delete: Remove Address",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Delete address succeeds\", function () {",
+                  "  pm.expect(pm.response.code).to.eql(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/addresses/{{addressId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "addresses",
+                "{{addressId}}"
+              ]
+            },
+            "description": "DELETE example. Uses the saved `addressId` collection variable."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Inventory",
+      "description": "Retailer inventory APIs using the exact Excel inventory fields. Listing responses are grid-ready and do not require frontend mapping. These requests require a retailer JWT because the inventory dataset belongs to the retailer.",
+      "item": [
+        {
+          "name": "List Inventory Items",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/inventory",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inventory"
+              ]
+            },
+            "description": "Returns the full inventory list with the exact Excel columns for direct frontend grid rendering."
+          },
+          "response": []
+        },
+        {
+          "name": "Search Inventory Items",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/inventory/search?itemName={{inventorySearchItemName}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inventory",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "itemName",
+                  "value": "{{inventorySearchItemName}}"
+                }
+              ]
+            },
+            "description": "Searches retailer inventory by itemName using case-insensitive partial matching. Returns the same grid-ready inventory row structure as the list API."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Inventory Item By Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/inventory/{{inventoryItemId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inventory",
+                "{{inventoryItemId}}"
+              ]
+            },
+            "description": "Returns one inventory item using the exact Excel field structure."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Inventory Item",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"itemId\": 200,\n  \"itemCode\": \"PL000200\",\n  \"itemName\": \"Test item\",\n  \"itemDescription\": \"Inventory item created from Postman\",\n  \"itemType\": \"PVC\",\n  \"itemSize\": \"2 inch\",\n  \"category\": \"Plumbing\",\n  \"subCategory\": \"Fittings\",\n  \"supplierName\": \"test-supplier\",\n  \"unitMeasurementType\": \"pieces\",\n  \"unitName\": \"boxes\",\n  \"quantity\": 0,\n  \"unitPrice\": 0,\n  \"discount\": 0\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/inventory",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inventory"
+              ]
+            },
+            "description": "Creates an inventory item using only the Excel field set. No basePrice or directSalePrice fields are used."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Inventory Item",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"itemId\": {{inventoryItemId}},\n  \"itemCode\": \"PL00001\",\n  \"itemName\": \"Lbow\",\n  \"itemDescription\": \"1/2'' pvc lbow\",\n  \"itemType\": \"PVC\",\n  \"itemSize\": \"1/2 inch\",\n  \"category\": \"Plumbing\",\n  \"subCategory\": \"Fittings\",\n  \"supplierName\": \"waterflo\",\n  \"unitMeasurementType\": \"pieces\",\n  \"unitName\": \"bags\",\n  \"quantity\": 0,\n  \"unitPrice\": 0,\n  \"discount\": 0\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/inventory/{{inventoryItemId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inventory",
+                "{{inventoryItemId}}"
+              ]
+            },
+            "description": "Updates one inventory item using the same field structure as the Excel dataset."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Inventory Item",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/inventory/{{inventoryItemId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inventory",
+                "{{inventoryItemId}}"
+              ]
+            },
+            "description": "Deletes an inventory item by itemId."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User Registration (3-Step Flow)",
+      "description": "Complete user registration with email verification. Required for all new user signups.",
+      "item": [
+        {
+          "name": "Step 1: Send Registration OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/send-registration-otp",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "send-registration-otp"
+              ]
+            },
+            "description": "Send OTP to the user's email for registration verification."
+          },
+          "response": []
+        },
+        {
+          "name": "Step 2: Verify Registration OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"user@example.com\",\n  \"otpCode\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/verify-registration-otp",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "verify-registration-otp"
+              ]
+            },
+            "description": "Verify the OTP received during registration."
+          },
+          "response": []
+        },
+        {
+          "name": "Step 3: Complete Customer Registration (Without Address)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"customer_user\",\n  \"email\": \"customer@example.com\",\n  \"phoneNumber\": \"+1234567890\",\n  \"password\": \"securePassword123\",\n  \"role\": \"ROLE_CUSTOMER\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Complete customer registration after OTP verification."
+          },
+          "response": []
+        },
+        {
+          "name": "Step 3: Complete Customer Registration (With Address)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"customer_user_with_address\",\n  \"email\": \"customer_with_address@example.com\",\n  \"phoneNumber\": \"+1234567895\",\n  \"password\": \"securePassword123\",\n  \"role\": \"ROLE_CUSTOMER\",\n  \"address\": {\n    \"line1\": \"123 Main St\",\n    \"city\": \"New York\",\n    \"state\": \"NY\",\n    \"country\": \"USA\",\n    \"postalCode\": \"10001\",\n    \"isPrimary\": true\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Complete customer registration with an initial address."
+          },
+          "response": []
+        },
+        {
+          "name": "Step 3: Complete Manufacturer Registration",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"manufacturer_user\",\n  \"email\": \"manufacturer@example.com\",\n  \"phoneNumber\": \"+1234567891\",\n  \"password\": \"securePassword123\",\n  \"role\": \"ROLE_MANUFACTURER\",\n  \"companyName\": \"ACME Manufacturing Co.\",\n  \"gstNumber\": \"GST123456789\",\n  \"businessType\": \"Electronics\",\n  \"address\": {\n    \"line1\": \"456 Industrial Ave\",\n    \"city\": \"Detroit\",\n    \"state\": \"MI\",\n    \"country\": \"USA\",\n    \"postalCode\": \"48201\",\n    \"isPrimary\": true\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Complete manufacturer registration after OTP verification."
+          },
+          "response": []
+        },
+        {
+          "name": "Step 3: Complete Retailer Registration",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"retailer_user\",\n  \"email\": \"retailer@example.com\",\n  \"phoneNumber\": \"+1234567892\",\n  \"password\": \"securePassword123\",\n  \"role\": \"ROLE_RETAILER\",\n  \"businessName\": \"Best Retail Store\",\n  \"gstNumber\": \"GST987654321\",\n  \"storeType\": \"Electronics\",\n  \"address\": {\n    \"line1\": \"789 Shopping Blvd\",\n    \"city\": \"Los Angeles\",\n    \"state\": \"CA\",\n    \"country\": \"USA\",\n    \"postalCode\": \"90001\",\n    \"isPrimary\": true\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Complete retailer registration after OTP verification."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User Authentication",
+      "description": "User login and authentication endpoints.",
+      "item": [
+        {
+          "name": "Login with Password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Login request succeeds\", function () {",
+                  "  pm.expect(pm.response.code).to.eql(200);",
+                  "});",
+                  "",
+                  "const data = pm.response.json();",
+                  "if (data && data.token) {",
+                  "  pm.collectionVariables.set(\"jwtToken\", data.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usernameOrEmail\": \"{{loginIdentifier}}\",\n  \"password\": \"{{loginPassword}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Login using username or email and receive a JWT token. Saves the returned token into the `jwtToken` collection variable."
+          },
+          "response": []
+        },
+        {
+          "name": "Login with OTP (Step 1: Send OTP)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"username_or_email_or_phone\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/send-login-otp",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "send-login-otp"
+              ]
+            },
+            "description": "Send OTP for passwordless login."
+          },
+          "response": []
+        },
+        {
+          "name": "Login with OTP (Step 2: Verify OTP)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"username_or_email_or_phone\",\n  \"otpCode\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/verify-login-otp",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "verify-login-otp"
+              ]
+            },
+            "description": "Verify the login OTP and receive a JWT token."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Password Management",
+      "description": "Password reset and recovery endpoints.",
+      "item": [
+        {
+          "name": "Send Forgot Password OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"username_or_email_or_phone\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/send-forgot-password-otp",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "send-forgot-password-otp"
+              ]
+            },
+            "description": "Send OTP for password reset."
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Password with OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"username_or_email_or_phone\",\n  \"otpCode\": \"123456\",\n  \"newPassword\": \"newSecurePassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/reset-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "reset-password"
+              ]
+            },
+            "description": "Reset password using OTP verification."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Address Management",
+      "description": "Address CRUD operations for authenticated users.",
+      "item": [
+        {
+          "name": "Create Address",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"line1\": \"123 Main St\",\n  \"line2\": \"Apt 4B\",\n  \"city\": \"New York\",\n  \"state\": \"NY\",\n  \"country\": \"USA\",\n  \"postalCode\": \"10001\",\n  \"addressType\": \"SHIPPING\",\n  \"isPrimary\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/addresses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "addresses"
+              ]
+            },
+            "description": "Create a new address for the authenticated user."
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Addresses",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/addresses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "addresses"
+              ]
+            },
+            "description": "Get all addresses for the authenticated user."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Address By Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/addresses/{{addressId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "addresses",
+                "{{addressId}}"
+              ]
+            },
+            "description": "Get a single address by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Address",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"line1\": \"456 Updated St\",\n  \"line2\": \"Suite 100\",\n  \"city\": \"Los Angeles\",\n  \"state\": \"CA\",\n  \"country\": \"USA\",\n  \"postalCode\": \"90001\",\n  \"addressType\": \"BILLING\",\n  \"isPrimary\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/addresses/{{addressId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "addresses",
+                "{{addressId}}"
+              ]
+            },
+            "description": "Update an existing address."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Address",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/addresses/{{addressId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "addresses",
+                "{{addressId}}"
+              ]
+            },
+            "description": "Delete an existing address."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Product Catalog",
+      "description": "Public catalog endpoints and direct manufacturer product creation.",
+      "item": [
+        {
+          "name": "Get Multi-Seller Catalog",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ]
+            },
+            "description": "Get the combined product catalog across sellers."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Product By Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/products/{{productId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{productId}}"
+              ]
+            },
+            "description": "Get a single base product by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Manufacturer Base Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productName\": \"Wireless Earbuds\",\n  \"category\": \"Electronics\",\n  \"subcategory\": \"Audio\",\n  \"brand\": \"ACME\",\n  \"unitOfMeasure\": \"piece\",\n  \"specifications\": \"Bluetooth 5.3, ANC, USB-C charging\",\n  \"basePrice\": 899.99,\n  \"directSalePrice\": 999.99,\n  \"stock\": 250\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/products/manufacturer",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "manufacturer"
+              ]
+            },
+            "description": "Create a base product as a manufacturer."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Manufacturer Operations",
+      "description": "Manufacturer-specific product management endpoints.",
+      "item": [
+        {
+          "name": "Create Manufacturer Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productName\": \"Smart Watch\",\n  \"category\": \"Electronics\",\n  \"subcategory\": \"Wearables\",\n  \"brand\": \"ACME\",\n  \"unitOfMeasure\": \"piece\",\n  \"specifications\": \"AMOLED display, GPS, heart-rate sensor\",\n  \"basePrice\": 2499.99,\n  \"directSalePrice\": 2699.99,\n  \"stock\": 120\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/manufacturer/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "manufacturer",
+                "products"
+              ]
+            },
+            "description": "Create a product in the authenticated manufacturer's catalog."
+          },
+          "response": []
+        },
+        {
+          "name": "List Manufacturer Products",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/manufacturer/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "manufacturer",
+                "products"
+              ]
+            },
+            "description": "List products owned by the authenticated manufacturer."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Manufacturer Product",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"stock\": 150,\n  \"basePrice\": 2399.99,\n  \"directSalePrice\": 2599.99,\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/manufacturer/products/{{manufacturerProductId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "manufacturer",
+                "products",
+                "{{manufacturerProductId}}"
+              ]
+            },
+            "description": "Update a manufacturer product by ID."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Retailer Operations",
+      "description": "Retailer-specific catalog and pricing management endpoints.",
+      "item": [
+        {
+          "name": "Add Product To Retailer Catalog",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"{{productId}}\",\n  \"stock\": 60,\n  \"retailPrice\": 1099.99,\n  \"discount\": 50.00\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/retailer/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "retailer",
+                "products"
+              ]
+            },
+            "description": "Add an existing base product to the authenticated retailer's catalog."
+          },
+          "response": []
+        },
+        {
+          "name": "List Retailer Products",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/retailer/products",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "retailer",
+                "products"
+              ]
+            },
+            "description": "List products in the authenticated retailer's catalog."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Retailer Product",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"stock\": 40,\n  \"retailPrice\": 1049.99,\n  \"discount\": 75.00,\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/retailer/products/{{retailerProductId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "retailer",
+                "products",
+                "{{retailerProductId}}"
+              ]
+            },
+            "description": "Update a retailer product by ID."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Order Management",
+      "description": "Customer order creation and seller order status updates.",
+      "item": [
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sellerType\": \"MANUFACTURER\",\n  \"sellerId\": \"{{sellerId}}\",\n  \"shippingAddressId\": \"{{addressId}}\",\n  \"items\": [\n    {\n      \"productId\": \"{{productId}}\",\n      \"quantity\": 2\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/orders",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "orders"
+              ]
+            },
+            "description": "Create an order as an authenticated customer."
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/orders/my",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "orders",
+                "my"
+              ]
+            },
+            "description": "Get orders belonging to the authenticated customer."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Order By Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/orders/{{orderId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "orders",
+                "{{orderId}}"
+              ]
+            },
+            "description": "Get a specific order by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Order Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"SHIPPED\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/orders/{{orderId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "orders",
+                "{{orderId}}",
+                "status"
+              ]
+            },
+            "description": "Update order status as the seller. Valid values include CREATED, PAID, SHIPPED, DELIVERED, and CANCELLED."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string",
+      "description": "Base URL for the API endpoints"
+    },
+    {
+      "key": "loginIdentifier",
+      "value": "retailer_user",
+      "type": "string",
+      "description": "Username or email used by the REST API basics login example. Defaults to the seeded retailer user for inventory testing."
+    },
+    {
+      "key": "loginPassword",
+      "value": "retailerpass",
+      "type": "string",
+      "description": "Password used by the REST API basics login example. Defaults to the seeded retailer user for inventory testing."
+    },
+    {
+      "key": "jwtToken",
+      "value": "",
+      "type": "string",
+      "description": "JWT token from login response for authenticated requests"
+    },
+    {
+      "key": "addressId",
+      "value": "",
+      "type": "string",
+      "description": "Address ID for address and order operations"
+    },
+    {
+      "key": "inventoryItemId",
+      "value": "1",
+      "type": "string",
+      "description": "Inventory itemId for inventory detail, update, and delete operations"
+    },
+    {
+      "key": "inventorySearchItemName",
+      "value": "lbow",
+      "type": "string",
+      "description": "Search term for inventory item name search requests"
+    },
+    {
+      "key": "productId",
+      "value": "",
+      "type": "string",
+      "description": "Base product ID for product lookup, retailer catalog, and order item operations"
+    },
+    {
+      "key": "manufacturerProductId",
+      "value": "",
+      "type": "string",
+      "description": "Manufacturer product ID for manufacturer update operations"
+    },
+    {
+      "key": "retailerProductId",
+      "value": "",
+      "type": "string",
+      "description": "Retailer product ID for retailer update operations"
+    },
+    {
+      "key": "sellerId",
+      "value": "",
+      "type": "string",
+      "description": "Seller UUID used when creating an order"
+    },
+    {
+      "key": "orderId",
+      "value": "",
+      "type": "string",
+      "description": "Order ID for order lookup and status updates"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ]
 }

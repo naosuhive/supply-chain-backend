@@ -8,5 +8,6 @@ import java.util.UUID;
 
 public interface RetailerProfileRepository extends JpaRepository<RetailerProfile, UUID> {
     Optional<RetailerProfile> findByUserId(UUID userId);
-}
 
+    Optional<RetailerProfile> findFirstByOrderByCreatedAtAsc();
+}

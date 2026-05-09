@@ -4,6 +4,7 @@ import com.noasuhive.supply_chain_management.models.Address;
 import com.noasuhive.supply_chain_management.security.JwtTokenProvider;
 import com.noasuhive.supply_chain_management.service.AddressService;
 import io.jsonwebtoken.Claims;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/addresses")
+@Tag(name = "Address Management", description = "Address CRUD APIs for authenticated users")
 public class AddressController {
 
     private final AddressService addressService;

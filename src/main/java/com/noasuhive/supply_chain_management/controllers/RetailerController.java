@@ -6,6 +6,7 @@ import com.noasuhive.supply_chain_management.dto.retailer.RetailerProductUpdateD
 import com.noasuhive.supply_chain_management.security.JwtTokenProvider;
 import com.noasuhive.supply_chain_management.service.retailer.RetailerService;
 import io.jsonwebtoken.Claims;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/retailer")
+@Tag(name = "Retailer Operations", description = "Retailer catalog and pricing management APIs")
 public class RetailerController {
 
     private final RetailerService retailerService;

@@ -6,6 +6,7 @@ import com.noasuhive.supply_chain_management.dto.product.ProductResponseDto;
 import com.noasuhive.supply_chain_management.security.JwtTokenProvider;
 import com.noasuhive.supply_chain_management.service.product.ProductService;
 import io.jsonwebtoken.Claims;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/products")
+@Tag(name = "Product Catalog", description = "Product catalog and direct manufacturer product APIs")
 public class ProductController {
 
     private final ProductService productService;

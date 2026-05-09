@@ -8,13 +8,13 @@ INSERT INTO roles (id, name) VALUES
 -- Insert users
 INSERT INTO users (id, username, email, phone_number, password, enabled, created_at, updated_at)
 VALUES 
-('550e8400-e29b-41d4-a716-446655440011', 'admin', 'admin@example.com', '+1234567890', '$2a$10$7QJ1y7x9f6Jz7p8h9k0l1e2d3c4b5a6f7g8h9i0j1k2l3m4n5o6p7', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('550e8400-e29b-41d4-a716-446655440011', 'admin', 'admin@example.com', '+1234567890', '$2a$10$wB84xRlMBePJOX29fA60luZcG52f1a/At/tXYJzuJHifR0Iq1SEDG', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 
-('550e8400-e29b-41d4-a716-446655440012', 'manufacturer_user', 'manufacturer@example.com', '+1234567891', '$2a$10$7QJ1y7x9f6Jz7p8h9k0l1e2d3c4b5a6f7g8h9i0j1k2l3m4n5o6p7', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('550e8400-e29b-41d4-a716-446655440012', 'manufacturer_user', 'manufacturer@example.com', '+1234567891', '$2a$10$oJazqfxo1E/ofHC3wC1C6O61Z5Avv0PfDLq4LbHLbetd2JPeovbsK', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 
-('550e8400-e29b-41d4-a716-446655440013', 'retailer_user', 'retailer@example.com', '+1234567892', '$2a$10$7QJ1y7x9f6Jz7p8h9k0l1e2d3c4b5a6f7g8h9i0j1k2l3m4n5o6p7', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('550e8400-e29b-41d4-a716-446655440013', 'retailer_user', 'retailer@example.com', '+1234567892', '$2a$10$E3k1NbHjJFLj9sD5a2FvSu05rQnfRLw.eS2D6wPxUhUHvZU5pcrL2', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
 
-('550e8400-e29b-41d4-a716-446655440014', 'customer_user', 'customer@example.com', '+1234567893', '$2a$10$7QJ1y7x9f6Jz7p8h9k0l1e2d3c4b5a6f7g8h9i0j1k2l3m4n5o6p7', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+('550e8400-e29b-41d4-a716-446655440014', 'customer_user', 'customer@example.com', '+1234567893', '$2a$10$hdav9GomhlivdB.0aAJsn.iN43XqcxCo0K3QPiqO9g..IemOJL4Cq', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- Assign roles to users
 INSERT INTO user_roles (user_id, role_id) VALUES 
