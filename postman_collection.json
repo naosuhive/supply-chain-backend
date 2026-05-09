@@ -227,7 +227,7 @@
     },
     {
       "name": "Inventory",
-      "description": "Retailer inventory APIs using the exact Excel inventory fields. Listing responses are grid-ready and do not require frontend mapping. These requests require a retailer JWT because the inventory dataset belongs to the retailer.",
+      "description": "Role-based inventory APIs. Manufacturer JWTs use manufacturer product inventory data and UUID productIds. Retailer JWTs use retailer inventory data and numeric itemIds. Listing responses are grid-ready and request bodies differ by role.",
       "item": [
         {
           "name": "List Inventory Items",
@@ -305,12 +305,77 @@
                 "{{inventoryItemId}}"
               ]
             },
-            "description": "Returns one inventory item using the exact Excel field structure."
+            "description": "Returns one inventory item by role. Manufacturer JWTs must use a manufacturer productId UUID in `{{inventoryItemId}}`, not the manufacturerId. Retailer JWTs must use a numeric retailer itemId."
           },
           "response": []
         },
         {
-          "name": "Create Inventory Item",
+          "name": "Create Inventory Item (Manufacturer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"active\": true,\n  \"basePrice\": 100.00,\n  \"brand\": \"QA\",\n  \"category\": \"Electronics\",\n  \"currentStock\": 0,\n  \"directSalePrice\": 120.00,\n  \"manufacturerId\": \"{{manufacturerId}}\",\n  \"manufacturerName\": \"{{manufacturerName}}\",\n  \"productDescription\": null,\n  \"productId\": null,\n  \"productName\": \"Retail Fix Verification A\",\n  \"subCategory\": \"Audio\",\n  \"unitOfMeasure\": \"piece\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/inventory",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inventory"
+              ]
+            },
+            "description": "Use this request with a manufacturer JWT. The body matches the manufacturer inventory row shape returned by the API. Manufacturer identity is still derived from the JWT."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Inventory Item (Manufacturer)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"active\": true,\n  \"basePrice\": 95.00,\n  \"brand\": \"QA Plus\",\n  \"category\": \"Electronics\",\n  \"currentStock\": 8,\n  \"directSalePrice\": 115.00,\n  \"manufacturerId\": \"{{manufacturerId}}\",\n  \"manufacturerName\": \"{{manufacturerName}}\",\n  \"productDescription\": \"Updated manufacturer inventory row from Postman\",\n  \"productId\": \"{{inventoryItemId}}\",\n  \"productName\": \"Retail Fix Verification A Updated\",\n  \"subCategory\": \"Audio\",\n  \"unitOfMeasure\": \"piece\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/inventory/{{inventoryItemId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "inventory",
+                "{{inventoryItemId}}"
+              ]
+            },
+            "description": "Use this request with a manufacturer JWT. `{{inventoryItemId}}` must be a manufacturer productId UUID, not the manufacturerId, and the body may be the same row shape returned by the manufacturer inventory APIs."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Inventory Item (Retailer)",
           "request": {
             "method": "POST",
             "header": [
@@ -337,12 +402,12 @@
                 "inventory"
               ]
             },
-            "description": "Creates an inventory item using only the Excel field set. No basePrice or directSalePrice fields are used."
+            "description": "Use this request with a retailer JWT. The body uses the retailer inventory Excel field set."
           },
           "response": []
         },
         {
-          "name": "Update Inventory Item",
+          "name": "Update Inventory Item (Retailer)",
           "request": {
             "method": "PUT",
             "header": [
@@ -370,7 +435,7 @@
                 "{{inventoryItemId}}"
               ]
             },
-            "description": "Updates one inventory item using the same field structure as the Excel dataset."
+            "description": "Use this request with a retailer JWT. `{{inventoryItemId}}` must be a numeric retailer itemId."
           },
           "response": []
         },
@@ -395,7 +460,7 @@
                 "{{inventoryItemId}}"
               ]
             },
-            "description": "Deletes an inventory item by itemId."
+            "description": "Deletes an inventory item by role. Manufacturer JWTs delete by manufacturer productId UUID. Retailer JWTs delete by numeric retailer itemId."
           },
           "response": []
         }
@@ -1333,7 +1398,19 @@
       "key": "inventoryItemId",
       "value": "1",
       "type": "string",
-      "description": "Inventory itemId for inventory detail, update, and delete operations"
+      "description": "Role-based inventory identifier. Use a numeric retailer itemId for retailer inventory requests, or a manufacturer productId UUID for manufacturer inventory requests. Do not use manufacturerId here."
+    },
+    {
+      "key": "manufacturerId",
+      "value": "e4666b34-e4b6-479c-840e-6d918bcfbca5",
+      "type": "string",
+      "description": "Manufacturer profile ID used in manufacturer inventory body examples. The backend still derives manufacturer access from the JWT."
+    },
+    {
+      "key": "manufacturerName",
+      "value": "ACME Manufacturing Co.",
+      "type": "string",
+      "description": "Manufacturer company name used in manufacturer inventory body examples."
     },
     {
       "key": "inventorySearchItemName",

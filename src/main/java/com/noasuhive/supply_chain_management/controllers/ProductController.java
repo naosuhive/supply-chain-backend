@@ -1,15 +1,16 @@
 package com.noasuhive.supply_chain_management.controllers;
 
-import com.noasuhive.supply_chain_management.dto.product.ProductCatalogDto;
 import com.noasuhive.supply_chain_management.dto.product.ProductCreateDto;
 import com.noasuhive.supply_chain_management.dto.product.ProductResponseDto;
 import com.noasuhive.supply_chain_management.security.JwtTokenProvider;
+import com.noasuhive.supply_chain_management.service.product.ProductCatalogAudience;
 import com.noasuhive.supply_chain_management.service.product.ProductService;
 import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -45,8 +46,13 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductCatalogDto>> getMultiSellerCatalog() {
-        return ResponseEntity.ok(productService.getMultiSellerCatalog());
+    public ResponseEntity<List<?>> getProducts(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).build();
+        }
+
+        ProductCatalogAudience audience = ProductCatalogAudience.fromAuthorities(authentication.getAuthorities());
+        return ResponseEntity.ok(productService.getProductsForCatalogAudience(audience, authentication.getName()));
     }
 
     @GetMapping("/{id}")

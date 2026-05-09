@@ -38,6 +38,7 @@ public class ManufacturerServiceImpl implements ManufacturerService {
         p.setBrand(dto.getBrand());
         p.setUnitOfMeasure(dto.getUnitOfMeasure());
         p.setSpecifications(dto.getSpecifications());
+        p.setDescription(dto.getDescription());
         p = productRepository.save(p);
 
         ManufacturerProduct mp = new ManufacturerProduct();
@@ -107,4 +108,3 @@ public class ManufacturerServiceImpl implements ManufacturerService {
         return response;
     }
 }
-

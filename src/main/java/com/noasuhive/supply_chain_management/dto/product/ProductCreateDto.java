@@ -15,6 +15,7 @@ public class ProductCreateDto {
     private String brand;
     private String unitOfMeasure;
     private String specifications;
+    private String description;
 
     @NotNull
     private BigDecimal basePrice;
@@ -43,6 +44,9 @@ public class ProductCreateDto {
     public String getSpecifications() { return specifications; }
     public void setSpecifications(String specifications) { this.specifications = specifications; }
 
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+
     public BigDecimal getBasePrice() { return basePrice; }
     public void setBasePrice(BigDecimal basePrice) { this.basePrice = basePrice; }
 
@@ -52,4 +56,3 @@ public class ProductCreateDto {
     public Long getStock() { return stock; }
     public void setStock(Long stock) { this.stock = stock; }
 }
-
